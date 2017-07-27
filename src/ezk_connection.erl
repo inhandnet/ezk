@@ -288,7 +288,7 @@ ensure_folder(ConnectionPId, PrefixPath) ->
 %% then establishes a connection to that server.
 %% returns {ok, State} or {error, ErrorMessage} or {unknown, Message, ErrorCode}
 init([Servers, TryTimes]) ->
-    random:seed(erlang:now()),
+    rand:seed(exsplus, erlang:timestamp()),
     process_flag(trap_exit, true),
     K = n_init_trys(Servers, TryTimes),
     ?LOG(1, "Connection established"),
@@ -298,7 +298,7 @@ n_init_trys(_Servers, 0) ->
     {stop, no_server_reached};
 n_init_trys(Servers, N) ->
     ?LOG(1,"Connect init : incomming args: ~w",[Servers]),
-    WhichServer = random:uniform(length(Servers)),
+    WhichServer = rand:uniform(length(Servers)),
     ?LOG(0,"Choose server ~w",[WhichServer]),
     {Ip, Port, WantedTimeout, HeartBeatTime} =  lists:nth(WhichServer, Servers),
     case establish_connection(Ip, Port, WantedTimeout, HeartBeatTime) of
